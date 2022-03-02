@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const path = require("path");
 
 const saucesRoutes = require("./routes/sauces");
 const userRoutes = require("./routes/user");
@@ -31,6 +32,8 @@ app.use((req, res, next) => {
 // pour le mettre à disposition sur l'objet requête dans req.body
 // remplace body parser
 app.use(express.json());
+
+app.use("images", express.static(path.join(__dirname, "images")));
 
 app.use("/api/sauces", saucesRoutes);
 app.use("/api/auth", userRoutes);

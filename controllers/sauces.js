@@ -1,9 +1,12 @@
 const Sauce = require("../models/Sauces");
+const fs = require("fs");
 
 exports.createSauce = (req, res, next) => {
-  delete req.body._id;
+  const sauceObject = JSON.parse(req.body.sauce);
+  delete sauceObject._id;
   const sauce = new Sauce({
-    ...req.body,
+    ...sauceObject,
+    imageUrl: `${req.protocol}://${req.get("host")}/images${req.file.filename}`,
   });
   sauce
     .save()
@@ -12,27 +15,33 @@ exports.createSauce = (req, res, next) => {
 };
 
 exports.modifySauce = (req, res, next) => {
-  Sauce.updateOne({ _id: req.params.id }, { ...req.body, _id: req.params.id })
+  const sauceObject = req.file
+    ? {
+        ...JSON.parse(req.body.sauce),
+        imageUrl: `${req.protocol}://${req.get("host")}/images${
+          req.file.filename
+        }`,
+      }
+    : { ...req.body };
+  Sauce.updateOne(
+    { _id: req.params.id },
+    { ...sauceObject, _id: req.params.id }
+  )
     .then(() => res.status(200).json({ message: "Sauce modifiée !" }))
     .catch((error) => res.status(400).json({ error }));
 };
 
 exports.deleteSauce = (req, res, next) => {
-  Sauce.findOne({ _id: req.params.id }).then((sauce) => {
-    if (!sauce) {
-      return res.status(404).json({
-        error: new Error("Sauce non trouvé !"),
+  Sauce.findOne({ _id: req.params.id })
+    .then((sauce) => {
+      const filename = sauce.imageUrl.split("/images/")[1];
+      fs.unlink(`images/${filename}`, () => {
+        Sauce.deleteOne({ _id: req.params.id })
+          .then(() => res.status(200).json({ message: "Sauce supprimée !" }))
+          .catch((error) => res.status(400).json({ error }));
       });
-    }
-    if (sauce.userId !== req.auth.userId) {
-      return res.status(401).json({
-        error: new Error("Requête non autorisée !"),
-      });
-    }
-    Sauce.deleteOne({ _id: req.params.id })
-      .then(() => res.status(200).json({ message: "Sauce supprimée !" }))
-      .catch((error) => res.status(400).json({ error }));
-  });
+    })
+    .catch((error) => res.status(500).json({ error }));
 };
 
 exports.getOneSauce = (req, res, next) => {
