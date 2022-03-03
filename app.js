@@ -7,11 +7,11 @@ const userRoutes = require("./routes/user");
 
 mongoose
   .connect(
-    "mongodb://usgnvs1hppxhatar2xl7:xRwau1uyvC6za2YfTVxn@brogbj3a6nukl60-mongodb.services.clever-cloud.com:27017/brogbj3a6nukl60",
+    "mongodb://usgnvs1hppxhatar2xl7:7JMgesc1ULYBmZb6IkKQ@brogbj3a6nukl60-mongodb.services.clever-cloud.com:27017/brogbj3a6nukl60",
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
   .then(() => console.log("Connexion à MongoDB réussie !"))
-  .catch(() => console.log("Connexion à MongoDB échouée !"));
+  .catch((error) => console.log(error));
 
 const app = express();
 
