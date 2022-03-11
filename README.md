@@ -1,6 +1,6 @@
 # HOT TAKES
 
-Installation
+# Installation
 
 Here are the dependancies you need to install:
 
@@ -12,7 +12,7 @@ On Windows, these installations require to use PowerShell in administrator mode.
 
 Then, clone this repo, run npm install, and run npm install --save-dev run-script-os.
 
-Usage
+# Usage
 
 Run npm start. This should both run the local server and launch your browser.
 
