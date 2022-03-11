@@ -30,6 +30,7 @@ exports.modifySauce = (req, res, next) => {
         }`,
       }
     : { ...req.body };
+  // Pour supprimer l'image
   Sauce.findOne({ _id: req.params.id }).then((data) => {
     const filename = data.imageUrl.split("/images/")[1];
     fs.unlink(`images/${filename}`, () => {});
